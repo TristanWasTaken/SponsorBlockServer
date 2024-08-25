@@ -5,6 +5,7 @@ import { UserID } from "../../src/types/user.model";
 import { Category, VideoID } from "../../src/types/segments.model";
 import { client } from "../utils/httpClient";
 import { partialDeepEquals } from "../utils/partialDeepEquals";
+import { insertVipUserQuery } from "../utils/queries";
 
 const stringDeepEquals = (a: string[], b: string[]): boolean => {
     let result = true;
@@ -29,8 +30,7 @@ const lockVIPUserHash = getHash(lockVIPUser);
 
 describe("lockCategoriesRecords", () => {
     before(async () => {
-        const insertVipUserQuery = 'INSERT INTO "vipUsers" ("userID") VALUES (?)';
-        await db.prepare("run", insertVipUserQuery, [lockVIPUserHash]);
+        insertVipUserQuery(db, lockVIPUserHash);
 
         const insertLockCategoryQuery = 'INSERT INTO "lockCategories" ("userID", "videoID", "actionType", "category", "reason", "service") VALUES (?, ?, ?, ?, ?, ?)';
         await db.prepare("run", insertLockCategoryQuery, [lockVIPUserHash, "no-segments-video-id", "skip", "sponsor", "reason-1", "YouTube"]);

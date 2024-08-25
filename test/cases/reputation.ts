@@ -2,6 +2,7 @@ import assert from "assert";
 import { db } from "../../src/databases/databases";
 import { getReputation, calculateReputationFromMetrics } from "../../src/utils/reputation";
 import { genUsers } from "../utils/genUser";
+import { insertVipUserQuery } from "../utils/queries";
 
 describe("reputation", () => {
     // user definitions
@@ -122,8 +123,7 @@ describe("reputation", () => {
         await db.prepare("run", sponsorTimesInsertQuery, [videoID, 1, 11, 0, 0, "reputation-7-uuid-7", users["have-most-upvoted-in-locked-video"].pubID, 1606240000000, 50, "sponsor", 0, 0]);
 
         // lock video
-        const insertVipUserQuery = 'INSERT INTO "vipUsers" ("userID") VALUES (?)';
-        await db.prepare("run", insertVipUserQuery, [users["locking-vip"].pubID]);
+        insertVipUserQuery(db, users["locking-vip"].pubID);
 
         const insertLockCategoryQuery = 'INSERT INTO "lockCategories" ("userID", "videoID", "category") VALUES (?, ?, ?)';
         await db.prepare("run", insertLockCategoryQuery, [users["locking-vip"].pubID, videoID, "sponsor"]);

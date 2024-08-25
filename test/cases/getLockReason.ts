@@ -3,6 +3,7 @@ import { db } from "../../src/databases/databases";
 import assert from "assert";
 import { client } from "../utils/httpClient";
 import { partialDeepEquals } from "../utils/partialDeepEquals";
+import { insertVipUserQuery } from "../utils/queries";
 
 const endpoint = "/api/lockReason";
 
@@ -13,9 +14,8 @@ const vipUserID2 = getHash("getLockReason-vipUserID_2");
 
 describe("getLockReason", () => {
     before(async () => {
-        const insertVipUserQuery = 'INSERT INTO "vipUsers" ("userID") VALUES (?)';
-        await db.prepare("run", insertVipUserQuery, [vipUserID1]);
-        await db.prepare("run", insertVipUserQuery, [vipUserID2]);
+        insertVipUserQuery(db, vipUserID1);
+        insertVipUserQuery(db, vipUserID2);
 
         const insertVipUserNameQuery = 'INSERT INTO "userNames" ("userID", "userName") VALUES (?, ?)';
         await db.prepare("run", insertVipUserNameQuery, [vipUserID1, vipUserName1]);

@@ -2,6 +2,7 @@ import { getHash } from "../../src/utils/getHash";
 import { db } from "../../src/databases/databases";
 import { client } from "../utils/httpClient";
 import assert from "assert";
+import { insertVipUserQuery } from "../utils/queries";
 
 describe("unBan", () => {
     const endpoint = "/api/shadowBanUser";
@@ -22,8 +23,7 @@ describe("unBan", () => {
         await db.prepare("run", insertShadowBannedUserQuery, ["testWoman-unBan"]);
         await db.prepare("run", insertShadowBannedUserQuery, ["testEntity-unBan"]);
 
-        const insertVipUserQuery = 'INSERT INTO "vipUsers" ("userID") VALUES (?)';
-        await db.prepare("run", insertVipUserQuery, [getHash(VIPuser)]);
+        insertVipUserQuery(db, getHash(VIPuser));
 
         const insertLockCategoryQuery = 'INSERT INTO "lockCategories" ("userID", "videoID", "category") VALUES(?, ?, ?)';
         await db.prepare("run", insertLockCategoryQuery, [getHash(VIPuser), "unBan-videoID-1", "sponsor"]);

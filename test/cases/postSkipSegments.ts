@@ -6,6 +6,7 @@ import * as YouTubeAPIModule from "../../src/utils/youtubeApi";
 import { YouTubeApiMock } from "../mocks/youtubeMock";
 import assert from "assert";
 import { client } from "../utils/httpClient";
+import { insertVipUserQuery } from "../utils/queries";
 
 export type Segment = {
     segment: number[];
@@ -54,8 +55,7 @@ describe("postSkipSegments", () => {
         const insertSponsorTimeQuery = 'INSERT INTO "sponsorTimes" ("videoID", "startTime", "endTime", "votes", "UUID", "userID", "timeSubmitted", views, category, "actionType", "videoDuration", "shadowHidden", "hashedVideoID") VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
         db.prepare("run", insertSponsorTimeQuery, ["full_video_segment", 0, 0, 0, "full-video-uuid-0", submitUserTwoHash, 0, 0, "sponsor", "full", 0, 0, "full_video_segment"]);
 
-        const insertVipUserQuery = 'INSERT INTO "vipUsers" ("userID") VALUES (?)';
-        db.prepare("run", insertVipUserQuery, [getHash(submitVIPuser)]);
+        insertVipUserQuery(db, getHash(submitVIPuser));
     });
 
     it("Should be able to submit a single time (Params method)", (done) => {

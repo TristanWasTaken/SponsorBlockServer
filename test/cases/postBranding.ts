@@ -3,6 +3,7 @@ import { getHash } from "../../src/utils/getHash";
 import { client } from "../utils/httpClient";
 import assert from "assert";
 import { Service } from "../../src/types/segments.model";
+import { insertVipUserQuery } from "../utils/queries";
 
 describe("postBranding", () => {
 
@@ -32,9 +33,8 @@ describe("postBranding", () => {
     const queryThumbnailVotesByUUID = (UUID: string, all = false) => db.prepare(all ? "all" : "get", `SELECT * FROM "thumbnailVotes" WHERE "UUID" = ?`, [UUID]);
 
     before(async () => {
-        const insertVipUserQuery = 'INSERT INTO "vipUsers" ("userID") VALUES (?)';
-        await db.prepare("run", insertVipUserQuery, [getHash(vipUser)]);
-        await db.prepare("run", insertVipUserQuery, [getHash(vipUser2)]);
+        insertVipUserQuery(db, getHash(vipUser));
+        insertVipUserQuery(db, getHash(vipUser2));
 
         const insertBannedUserQuery = 'INSERT INTO "shadowBannedUsers" ("userID") VALUES (?)';
         await db.prepare("run", insertBannedUserQuery, [getHash(bannedUser)]);

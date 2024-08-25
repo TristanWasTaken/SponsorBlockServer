@@ -3,6 +3,7 @@ import { db } from "../../src/databases/databases";
 import assert from "assert";
 import { client } from "../utils/httpClient";
 import { ActionType } from "../../src/types/segments.model";
+import { insertVipUserQuery } from "../utils/queries";
 
 const fakeHash = "b05a20424f24a53dac1b059fb78d861ba9723645026be2174c93a94f9106bb35";
 const endpoint = "/api/lockCategories";
@@ -10,8 +11,7 @@ const getLockCategories = (hash: string, actionType = [ActionType.Mute, ActionTy
 
 describe("getLockCategoriesByHash", () => {
     before(async () => {
-        const insertVipUserQuery = 'INSERT INTO "vipUsers" ("userID") VALUES (?)';
-        await db.prepare("run", insertVipUserQuery, [getHash("getLockCategoriesHashVIP")]);
+        insertVipUserQuery(db, getHash("getLockCategoriesHashVIP"));
 
         const insertLockCategoryQuery = 'INSERT INTO "lockCategories" ("userID", "videoID", "actionType", "category", "reason", "hashedVideoID") VALUES (?, ?, ?, ?, ?, ?)';
         await db.prepare("run", insertLockCategoryQuery, [getHash("getLockCategoriesHashVIP"), "getLockHash1", "skip", "sponsor", "1-reason-short", getHash("getLockHash1", 1)]);
